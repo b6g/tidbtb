@@ -1,4 +1,4 @@
-module github.com/b6g/tidbsqldigest
+module github.com/b6g/tidbtb
 
 go 1.23.2
 
