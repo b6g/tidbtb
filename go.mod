@@ -4,6 +4,7 @@ go 1.23.2
 
 require (
 	github.com/pingcap/tidb/pkg/parser v0.0.0-20231124053542-069631e2ecfe
+	github.com/tikv/client-go/v2 v2.0.7
 	github.com/zncoder/check v0.0.0-20240921154110-f068e8bec397
 	github.com/zncoder/mygo v0.0.0-20240923043316-338d88ff1fe8
 )
