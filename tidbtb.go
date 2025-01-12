@@ -39,16 +39,38 @@ func (OpList) TSO() {
 	tso()
 }
 
+func isDigit(s string) bool {
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			return false
+		}
+	}
+	return true
+}
+
+const timestampFormat = "2006-01-02 15:04:05 -0700 MST"
+
 func tso() {
-	mygo.ParseFlag("[tso]")
+	mygo.ParseFlag("[tso|timestamp...]")
 
 	if flag.NArg() == 0 {
 		tso := oracle.GoTimeToTS(time.Now())
 		fmt.Println(tso)
 	} else {
-		tso := check.V(strconv.ParseUint(flag.Arg(0), 10, 64)).F("parse tso")
-		t := oracle.GetTimeFromTS(tso)
-		fmt.Printf("%d.%d\n%v\n%v\n", t.Unix(), t.Nanosecond()/1e3, t.UTC(), t.Local())
+		for i, s := range flag.Args() {
+			if isDigit(s) {
+				tso := check.V(strconv.ParseUint(s, 10, 64)).F("parse tso")
+				t := oracle.GetTimeFromTS(tso)
+				if i != 0 {
+					fmt.Println("----")
+				}
+				fmt.Printf("%d\n%d.%d\n%v\n%v\n", tso, t.Unix(), t.Nanosecond()/1e3, t.UTC(), t.Local())
+			} else {
+				t := check.V(time.Parse(timestampFormat, s)).F("parse time", "format", timestampFormat, "value", s)
+				tso := oracle.GoTimeToTS(t)
+				fmt.Println(tso)
+			}
+		}
 	}
 }
 
